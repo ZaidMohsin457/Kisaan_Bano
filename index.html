@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kisaan Bano - آپ کا زرعی مشیر | Your Agricultural Assistant">
+    <title>Kisaan Bano - کسان بنو | Voice AI Assistant</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .language-toggle {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: white;
+            color: #27ae60;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .lang-btn.active {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .info-section h2 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-section li {
+            padding: 10px 0;
+            padding-right: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .info-section li:before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .assistant-wrapper {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .assistant-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* RTL Support for Urdu */
+        [dir="rtl"] .info-section li:before {
+            right: auto;
+            left: 0;
+        }
+
+        [dir="rtl"] .info-section li {
+            padding-right: 0;
+            padding-left: 25px;
+        }
+
+        [dir="rtl"] .info-section {
+            border-left: none;
+            border-right: 5px solid #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="pulse">🌾 Kisaan Bano - کسان بنو</h1>
+            <p id="tagline">آپ کا زرعی مشیر | Your Agricultural Voice Assistant</p>
+        </div>
+
+        <div class="language-toggle">
+            <button class="lang-btn active" onclick="switchLanguage('ur')" data-lang="ur">اردو</button>
+            <button class="lang-btn" onclick="switchLanguage('en')" data-lang="en">English</button>
+            <button class="lang-btn" onclick="switchLanguage('pa')" data-lang="pa">ਪੰਜਾਬੀ</button>
+            <button class="lang-btn" onclick="switchLanguage('sd')" data-lang="sd">سنڌي</button>
+        </div>
+
+        <div class="content">
+            <div class="info-section">
+                <h2 id="about-title">کسان بنو کے بارے میں</h2>
+                <ul id="about-list">
+                    <li>آواز سے کام کرنے والا AI مشیر - کسی بھی فون سے استعمال کریں</li>
+                    <li>سبسڈی، فصل انشورنس، اور قرضوں کی معلومات</li>
+                    <li>آسان اردو اور مقامی زبانوں میں رہنمائی</li>
+                    <li>قدم بہ قدم درخواست کا طریقہ</li>
+                    <li>کم انٹرنیٹ میں بھی کام کرتا ہے</li>
+                </ul>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🎤</div>
+                    <h3 id="feature1-title">آواز سے بات کریں</h3>
+                    <p id="feature1-desc">اپنی زبان میں سوال پوچھیں</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3 id="feature2-title">فوری جوابات</h3>
+                    <p id="feature2-desc">منٹوں میں واضح رہنمائی</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 id="feature3-title">سبسڈی تلاش کریں</h3>
+                    <p id="feature3-desc">آپ کے لیے کونسی سکیمیں ہیں</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 id="feature4-title">SMS الرٹ</h3>
+                    <p id="feature4-desc">معلومات SMS پر بھی ملے گی</p>
+                </div>
+            </div>
+
+            <div class="assistant-wrapper">
+                <h2 class="assistant-title" id="assistant-title">🎙️ اپنا سوال پوچھیں</h2>
+                <div class="loading-indicator" id="loading">
+                    <p>⏳ AI Assistant لوڈ ہو رہا ہے...</p>
+                </div>
+                
+                <!-- Uplift Voice AI Assistant Widget -->
+                <script src="https://cdn.jsdelivr.net/npm/@upliftai/assistant-widget@0.0" async onload="assistantLoaded()"></script>
+                <upliftai-assistant 
+                    assistant-id="b33eaea5-792d-47b6-904b-98d49c1d4f2c"
+                    style="width: 100%; min-height: 400px; border-radius: 10px;">
+                </upliftai-assistant>
+            </div>
+
+            <div class="info-section" style="margin-top: 30px;">
+                <h2 id="help-title">کیسے استعمال کریں؟</h2>
+                <ul id="help-list">
+                    <li>اوپر مائیک بٹن پر کلک کریں</li>
+                    <li>اپنا سوال پوچھیں (مثلاً: "گندم کی سبسڈی کیسے ملے گی؟")</li>
+                    <li>AI آپ کو قدم بہ قدم بتائے گی</li>
+                    <li>ضروری کاغذات اور آفس کی تفصیل ملے گی</li>
+                    <li>SMS پر بھی جواب موصول ہوگا</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p id="footer-text">
+                <strong>Kisaan Bano</strong> - Empowering Pakistani Farmers with AI<br>
+                <small>سوالات؟ ہماری ٹیم 24/7 آپ کی مدد کے لیے تیار ہے</small>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Language content
+        const translations = {
+            ur: {
+                tagline: 'آپ کا زرعی مشیر | Your Agricultural Voice Assistant',
+                aboutTitle: 'کسان بنو کے بارے میں',
+                aboutList: [
+                    'آواز سے کام کرنے والا AI مشیر - کسی بھی فون سے استعمال کریں',
+                    'سبسڈی، فصل انشورنس، اور قرضوں کی معلومات',
+                    'آسان اردو اور مقامی زبانوں میں رہنمائی',
+                    'قدم بہ قدم درخواست کا طریقہ',
+                    'کم انٹرنیٹ میں بھی کام کرتا ہے'
+                ],
+                feature1Title: 'آواز سے بات کریں',
+                feature1Desc: 'اپنی زبان میں سوال پوچھیں',
+                feature2Title: 'فوری جوابات',
+                feature2Desc: 'منٹوں میں واضح رہنمائی',
+                feature3Title: 'سبسڈی تلاش کریں',
+                feature3Desc: 'آپ کے لیے کونسی سکیمیں ہیں',
+                feature4Title: 'SMS الرٹ',
+                feature4Desc: 'معلومات SMS پر بھی ملے گی',
+                assistantTitle: '🎙️ اپنا سوال پوچھیں',
+                helpTitle: 'کیسے استعمال کریں؟',
+                helpList: [
+                    'اوپر مائیک بٹن پر کلک کریں',
+                    'اپنا سوال پوچھیں (مثلاً: "گندم کی سبسڈی کیسے ملے گی؟")',
+                    'AI آپ کو قدم بہ قدم بتائے گی',
+                    'ضروری کاغذات اور آفس کی تفصیل ملے گی',
+                    'SMS پر بھی جواب موصول ہوگا'
+                ],
+                footerText: '<strong>Kisaan Bano</strong> - Empowering Pakistani Farmers with AI<br><small>سوالات؟ ہماری ٹیم 24/7 آپ کی مدد کے لیے تیار ہے</small>'
+            },
+            en: {
+                tagline: 'Your Agricultural Voice Assistant | آپ کا زرعی مشیر',
+                aboutTitle: 'About Kisaan Bano',
+                aboutList: [
+                    'Voice-first AI advisor - use from any phone',
+                    'Information on subsidies, crop insurance, and loans',
+                    'Easy guidance in Urdu and local languages',
+                    'Step-by-step application process',
+                    'Works even with low internet'
+                ],
+                feature1Title: 'Speak Naturally',
+                feature1Desc: 'Ask questions in your language',
+                feature2Title: 'Instant Answers',
+                feature2Desc: 'Clear guidance in minutes',
+                feature3Title: 'Find Subsidies',
+                feature3Desc: 'Which schemes are for you',
+                feature4Title: 'SMS Alerts',
+                feature4Desc: 'Get info via SMS too',
+                assistantTitle: '🎙️ Ask Your Question',
+                helpTitle: 'How to Use?',
+                helpList: [
+                    'Click the microphone button above',
+                    'Ask your question (e.g., "How do I get wheat subsidy?")',
+                    'AI will guide you step by step',
+                    'Get required documents and office details',
+                    'Receive answers via SMS as well'
+                ],
+                footerText: '<strong>Kisaan Bano</strong> - Empowering Pakistani Farmers with AI<br><small>Questions? Our team is ready to help 24/7</small>'
+            },
+            pa: {
+                tagline: 'ਤੁਹਾਡਾ ਖੇਤੀਬਾੜੀ ਆਵਾਜ਼ ਸਹਾਇਕ | Your Agricultural Voice Assistant',
+                aboutTitle: 'ਕਿਸਾਨ ਬਣੋ ਬਾਰੇ',
+                aboutList: [
+                    'ਆਵਾਜ਼-ਪਹਿਲਾਂ AI ਸਲਾਹਕਾਰ - ਕਿਸੇ ਵੀ ਫੋਨ ਤੋਂ ਵਰਤੋਂ',
+                    'ਸਬਸਿਡੀ, ਫਸਲ ਬੀਮਾ, ਅਤੇ ਕਰਜ਼ੇ ਦੀ ਜਾਣਕਾਰੀ',
+                    'ਉਰਦੂ ਅਤੇ ਸਥਾਨਕ ਭਾਸ਼ਾਵਾਂ ਵਿੱਚ ਸੌਖੀ ਗਾਈਡ',
+                    'ਕਦਮ-ਦਰ-ਕਦਮ ਅਰਜ਼ੀ ਪ੍ਰਕਿਰਿਆ',
+                    'ਘੱਟ ਇੰਟਰਨੈੱਟ ਵਿੱਚ ਵੀ ਕੰਮ ਕਰਦਾ ਹੈ'
+                ],
+                feature1Title: 'ਆਵਾਜ਼ ਨਾਲ ਗੱਲ ਕਰੋ',
+                feature1Desc: 'ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸਵਾਲ ਪੁੱਛੋ',
+                feature2Title: 'ਤੁਰੰਤ ਜਵਾਬ',
+                feature2Desc: 'ਮਿੰਟਾਂ ਵਿੱਚ ਸਾਫ਼ ਗਾਈਡ',
+                feature3Title: 'ਸਬਸਿਡੀ ਲੱਭੋ',
+                feature3Desc: 'ਤੁਹਾਡੇ ਲਈ ਕਿਹੜੀਆਂ ਸਕੀਮਾਂ ਹਨ',
+                feature4Title: 'SMS ਅਲਰਟ',
+                feature4Desc: 'SMS ਰਾਹੀਂ ਵੀ ਜਾਣਕਾਰੀ ਮਿਲੇਗੀ',
+                assistantTitle: '🎙️ ਆਪਣਾ ਸਵਾਲ ਪੁੱਛੋ',
+                helpTitle: 'ਕਿਵੇਂ ਵਰਤਣਾ ਹੈ?',
+                helpList: [
+                    'ਉੱਪਰ ਮਾਈਕ ਬਟਨ ਤੇ ਕਲਿੱਕ ਕਰੋ',
+                    'ਆਪਣਾ ਸਵਾਲ ਪੁੱਛੋ (ਜਿਵੇਂ: "ਕਣਕ ਦੀ ਸਬਸਿਡੀ ਕਿਵੇਂ ਮਿਲੇਗੀ?")',
+                    'AI ਤੁਹਾਨੂੰ ਕਦਮ-ਦਰ-ਕਦਮ ਦੱਸੇਗੀ',
+                    'ਜ਼ਰੂਰੀ ਕਾਗਜ਼ਾਤ ਅਤੇ ਦਫਤਰ ਦਾ ਵੇਰਵਾ ਮਿਲੇਗਾ',
+                    'SMS ਰਾਹੀਂ ਵੀ ਜਵਾਬ ਮਿਲੇਗਾ'
+                ],
+                footerText: '<strong>Kisaan Bano</strong> - Empowering Pakistani Farmers with AI<br><small>ਸਵਾਲ? ਸਾਡੀ ਟੀਮ 24/7 ਤੁਹਾਡੀ ਮਦਦ ਲਈ ਤਿਆਰ ਹੈ</small>'
+            },
+            sd: {
+                tagline: 'توهان جو زرعي آواز مددگار | Your Agricultural Voice Assistant',
+                aboutTitle: 'ڪسان بنو بابت',
+                aboutList: [
+                    'آواز-پهريون AI صلاحڪار - ڪنهن به فون تان استعمال ڪريو',
+                    'سبسڊي، فصل انشورنس، ۽ قرضن جي ڄاڻ',
+                    'اردو ۽ مقامي ٻولين ۾ آسان رهنمائي',
+                    'قدم-در-قدم درخواست جو طريقو',
+                    'گهٽ انٽرنيٽ ۾ به ڪم ڪري ٿو'
+                ],
+                feature1Title: 'آواز سان ڳالهايو',
+                feature1Desc: 'پنهنجي ٻولي ۾ سوال پڇو',
+                feature2Title: 'فوري جواب',
+                feature2Desc: 'منٽن ۾ واضح رهنمائي',
+                feature3Title: 'سبسڊي ڳوليو',
+                feature3Desc: 'توهان لاءِ ڪهڙيون اسڪيمون آهن',
+                feature4Title: 'SMS الرٽ',
+                feature4Desc: 'SMS ذريعي به معلومات ملندي',
+                assistantTitle: '🎙️ پنهنجو سوال پڇو',
+                helpTitle: 'ڪيئن استعمال ڪجي؟',
+                helpList: [
+                    'مٿي مائڪ بٽڻ تي ڪلڪ ڪريو',
+                    'پنهنجو سوال پڇو (مثال: "ڪڻڪ جي سبسڊي ڪيئن ملندي?")',
+                    'AI توهان کي قدم-در-قدم ٻڌائيندي',
+                    'ضروري ڪاغذ ۽ آفيس جي تفصيل ملندي',
+                    'SMS ذريعي به جواب ملندو'
+                ],
+                footerText: '<strong>Kisaan Bano</strong> - Empowering Pakistani Farmers with AI<br><small>سوال؟ اسان جي ٽيم 24/7 توهان جي مدد لاءِ تيار آهي</small>'
+            }
+        };
+
+        // Switch language function
+        function switchLanguage(lang) {
+            const content = translations[lang];
+            if (!content) return;
+
+            // Update text direction
+            document.documentElement.setAttribute('dir', (lang === 'en' || lang === 'pa') ? 'ltr' : 'rtl');
+            document.documentElement.setAttribute('lang', lang);
+
+            // Update content
+            document.getElementById('tagline').innerHTML = content.tagline;
+            document.getElementById('about-title').textContent = content.aboutTitle;
+            
+            const aboutList = document.getElementById('about-list');
+            aboutList.innerHTML = content.aboutList.map(item => `<li>${item}</li>`).join('');
+
+            document.getElementById('feature1-title').textContent = content.feature1Title;
+            document.getElementById('feature1-desc').textContent = content.feature1Desc;
+            document.getElementById('feature2-title').textContent = content.feature2Title;
+            document.getElementById('feature2-desc').textContent = content.feature2Desc;
+            document.getElementById('feature3-title').textContent = content.feature3Title;
+            document.getElementById('feature3-desc').textContent = content.feature3Desc;
+            document.getElementById('feature4-title').textContent = content.feature4Title;
+            document.getElementById('feature4-desc').textContent = content.feature4Desc;
+
+            document.getElementById('assistant-title').textContent = content.assistantTitle;
+            document.getElementById('help-title').textContent = content.helpTitle;
+
+            const helpList = document.getElementById('help-list');
+            helpList.innerHTML = content.helpList.map(item => `<li>${item}</li>`).join('');
+
+            document.getElementById('footer-text').innerHTML = content.footerText;
+
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Show loading indicator initially
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loading').classList.add('active');
+        });
+
+        // Hide loading indicator when assistant loads
+        function assistantLoaded() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('active');
+            }, 1000);
+        }
+
+        // Performance optimization - preload assistant
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                console.log('Kisaan Bano Voice AI Assistant Ready');
+            });
+        }
+    </script>
+</body>
+</html>
